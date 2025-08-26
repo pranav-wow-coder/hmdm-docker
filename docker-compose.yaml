@@ -19,7 +19,7 @@ services:
     volumes:
       - ./volumes/letsencrypt:/etc/letsencrypt
     ports: 
-      - 80:80
+      - 2139:2139
     entrypoint: "certbot certonly --non-interactive --agree-tos -m ${ADMIN_EMAIL} --standalone -d ${BASE_DOMAIN}"
 
   postgresql:
@@ -37,8 +37,8 @@ services:
     image: headwindmdm/hmdm:0.1.5
     ports:
       # Uncomment this port forwarding if you want to use plain HTTP instead of HTTPS
-      #- 80:8080
-      - 443:8443
+      - 80:8080
+      #443:8443
       - 31000:31000
     volumes:
       - ./volumes/work:/usr/local/tomcat/work
@@ -49,7 +49,7 @@ services:
       SQL_USER: ${SQL_USER}
       SQL_BASE: ${SQL_BASE}
       SQL_PASS: ${SQL_PASS}
-      BASE_DOMAIN: ${BASE_DOMAIN}
+      BASE_DOMAIN: "10.1.133.93"
       LOCAL_IP: ${LOCAL_IP}
       PROTOCOL: ${PROTOCOL}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
@@ -58,5 +58,5 @@ services:
       DOWNLOAD_CREDENTIALS: ${DOWNLOAD_CREDENTIALS}
       HMDM_URL: ${HMDM_URL}
       CLIENT_VERSION: ${CLIENT_VERSION}
-      FORCE_RECONFIGURE: ${FORCE_RECONFIGURE}
+      FORCE_RECONFIGURE: "true"
 
