@@ -73,21 +73,6 @@ for FILE in $FILES_TO_DOWNLOAD; do
     fi
 done
 
-# jks is always created from the certificates
-if [ "$PROTOCOL" = "https" ]; then
-    if [ "$HTTPS_LETSENCRYPT" = "true" ]; then
-	HTTPS_CERT_PATH=/etc/letsencrypt/live/$BASE_DOMAIN
-        echo "Looking for SSL keys in $HTTPS_CERT_PATH..."
-	# If started by docker-compose, let's wait until certbot completes
-	until [ -f $HTTPS_CERT_PATH/$HTTPS_PRIVKEY ]; do
-            echo "Keys not found, waiting..."
-	    sleep 5
-        done
-    fi
-
-    openssl pkcs12 -export -out $TOMCAT_DIR/ssl/hmdm.p12 -inkey $HTTPS_CERT_PATH/$HTTPS_PRIVKEY -in $HTTPS_CERT_PATH/$HTTPS_CERT -certfile $HTTPS_CERT_PATH/$HTTPS_FULLCHAIN -password pass:$PASSWORD
-    keytool -importkeystore -destkeystore $TOMCAT_DIR/ssl/hmdm.jks -srckeystore $TOMCAT_DIR/ssl/hmdm.p12 -srcstoretype PKCS12 -srcstorepass $PASSWORD -deststorepass $PASSWORD -noprompt    
-fi
 
 # Waiting for the database
 until PGPASSWORD=$SQL_PASS psql -h "$SQL_HOST" -U "$SQL_USER" -d "$SQL_BASE" -c '\q'; do
